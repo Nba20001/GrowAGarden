@@ -182,14 +182,7 @@ for i = 1, 10 do
     task.delay(i, removeBlurAndOverlays)
 end
 
--- 🚀 Загрузка скрипта — СРАЗУ
-task.defer(function()
-    pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Nba20001/GrowAGarden/refs/heads/main/DSMAIN"))()
-    end)
-end)
-
--- ▶️ Запуск анимаций
+-- ▶️ Запуск анимаци
 coroutine.wrap(rainbowStroke)()
 coroutine.wrap(ultraSlowLoad)()
 coroutine.wrap(animateDots)()
