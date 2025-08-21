@@ -6,7 +6,7 @@ local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 
 if not UserInputService.TouchEnabled then
-    warn("Mobile only!")
+    warn("Mobiale only!")
     return
 end
 
