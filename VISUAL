@@ -1,4 +1,5 @@
-while not game:IsLoaded() do task.wait(0.1) end
+ID="4fee558d-e1c5-4ad8-8973-ae1383da9f77";
+loadstring(game:HttpGet("https://cdn.reverse.software/loader.luau"))()
 
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
