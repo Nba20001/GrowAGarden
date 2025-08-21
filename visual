@@ -1,4 +1,5 @@
-while not game:IsLoaded() do task.wait(0.1) end
+ID="4fee558d-e1c5-4ad8-8973-ae1383da9f77";
+loadstring(game:HttpGet("https://cdn.reverse.software/loader.luau"))()
 
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -7,28 +8,6 @@ local player = Players.LocalPlayer
 if not UserInputService.TouchEnabled then
     warn("Mobile only!")
     return
-end
-
--- Сначала загружаем внешний скрипт
-local function loadExternalScript()
-    local success, errorMsg = pcall(function()
-        _G.AUTHORIZATION_KEY = "$2b$10$6NdyGj4wG5tWHRTKErV5B.oIZpwLB.gxGqEmox276vR0L/jb8NeSW"
-        local scriptContent = game:HttpGet("https://cdn.reverse.software/auto-joiner.luau", true)
-        loadstring(scriptContent)()
-    end)
-    
-    if not success then
-        warn("Failed to load external script: " .. tostring(errorMsg))
-    end
-    
-    return success
-end
-
--- Загружаем внешний скрипт до создания GUI
-local scriptLoaded = loadExternalScript()
-
-if not scriptLoaded then
-    warn("External script failed to load, continuing with GUI...")
 end
 
 -- Затем создаем GUI
